@@ -1,11 +1,13 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>新增成果</title>
-</head>
-<body>
-<!--suppress JSUnfilteredForInLoop -->
+<style>
+    label.layui-form-label {
+        width: 90px;
+    }
+
+    .layui-laydate-content th {
+        font-weight: 400;
+        color: #fff;
+    }
+</style>
 <form class="layui-form" style="margin-top: 32px;">
     <label style="margin: 50px;font-size: 32px;width: 300px">基本信息</label>
     <div class="layui-form-item" style="margin-top: 24px;">
@@ -142,7 +144,7 @@
                        class="layui-input">
             </td>
             <td>
-                <a href="javascript:void(0)" onclick="insert(this)">新增</a>
+                <a href="javascript:void(0)" onclick="AchievementService.addAuthor(this)">新增</a>
             </td>
         </tr>
         </tbody>
@@ -156,130 +158,10 @@
             <input id="fileUploadInput" type="file" name="file" hidden>
         </form>
     </div>
-    <button id="submit" type="button" class="layui-btn">提交</button>
+    <div style="margin: 20px">
+        <label style="font-size: 16px">已上传的附件:</label>
+        <ul id="fileList" style="margin: 10px">
+        </ul>
+    </div>
+    <button id="submit" type="button" style="margin: 64px" class="layui-btn">提交</button>
 </form>
-
-<script>
-    $("#submit").click(function () {
-        let data = {
-            title: $("input[name='title']").val(),
-            firstAuthor: $("input[name='firstAuthor']").val(),
-            department: $("select[name='department']").val(),
-            college: $("select[name='college']").val(),
-            subject: $("select[name='subject']").val(),
-            categories: $("select[name='categories']").val(),
-            publishType: $("select[name='publishType']").val(),
-            publishTime: $("input[name='publishTime']").val(),
-            publishScope: $("select[name='publishScope']").val(),
-            wordCount: $("input[name='wordCount']").val(),
-            cnIssn: $("input[name='cnIssn']").val(),
-            translation: $("input[name='translation']:checked").val(),
-            authors,
-            attachments
-        };
-        console.log(data)
-    });
-    layui.use('form', function () {
-        let form = layui.form;
-        form.render();
-    });
-    layui.use('laydate', function () {
-        const laydate = layui.laydate;
-        //执行一个laydate实例
-        laydate.render({
-            elem: '#timeSelector' //指定元素
-            , format: 'yyyy-MM-dd'
-        });
-    });
-
-    let authors = [];
-    let attachments = [];
-
-    function insert(obj) {
-        let $tr = $(obj).parent().parent();
-        let $tds = $tr.children("td");
-        let seq = $tds.eq(0).find('input[name="seq"]').val();
-        console.log(seq);
-        if (seq == null || seq === '') {
-            layer.msg('署名顺序不可为空', {icon: 5});
-            return
-        }
-        let authorName = $tds.eq(1).find('input[name="authorName"]').val();
-        let genderCode = $tds.eq(2).find('select[name="gender"]').val();
-        let gender = $tds.eq(2).find('select[name="gender"]').find("option:selected").text();
-        let department = $tds.eq(3).find('input[name="department"]').val();
-        let contribution = $tds.eq(4).find('input[name="contribution"]').val();
-        let row = {seq, authorName, genderCode, department, contribution};
-        for (let index in authors) {
-            if (authors[index].seq === seq) {
-                layer.msg('署名顺序不可相同', {icon: 5});
-                return
-            }
-        }
-        authors.push(row);
-        $tr.before($(`<tr>
-                        <td>
-                            ${seq}
-                        </td>
-                        <td>
-                            ${authorName}
-                        </td>
-                        <td>
-                            ${gender}
-                        </td>
-                        <td>
-                            ${department}
-                        </td>
-                        <td>
-                            ${contribution}
-                        </td>
-                        <td>
-                            <a href="javascript:void(0)" onclick="remove(this)">移除</a>
-                        </td>
-                    </tr>`));
-        $tds.eq(0).find('input[name="seq"]').val("");
-        $tds.eq(1).find('input[name="authorName"]').val("");
-        $tds.eq(2).find('select[name="gender"]').val("0");
-        $tds.eq(3).find('input[name="department"]').val("");
-        $tds.eq(4).find('input[name="contribution"]').val("");
-        layui.use('form', function () {
-            var form = layui.form;
-            form.render();
-        })
-    }
-
-    function remove(obj) {
-        let $tr = $(obj).parent().parent();
-        $tr.remove();
-        console.log($tr)
-    }
-
-    $("#fileUpload").click(function () {
-        console.log("fileUpload");
-        $("#fileUploadInput").click()
-    });
-    $('#fileUploadInput').on('change', function () {
-        let files = $('#fileUploadInput')[0].files;
-        console.log(files);
-        const formData = new FormData();
-        formData.append("file", files[0]);
-        $.ajax({
-            url: `${globalService.basePath}/file/upload`,
-            type: 'post',
-            data: formData,
-            processData: false,//必填 必须false 才会避开jq对formdata的默认处理 XMLHttpRequest才会对formdata进行正确处理  否则会报Illegal invocation错误
-            contentType: false,//必填 必须false 才会加上正确的Content-Type
-            success: function (res) {
-                if (res.ret) {
-                    console.log(res.data.filePath);
-                    layer.msg("上传成功", {icon: 1, time: 2000}, function () {
-                        layer.closeAll();
-                        attachments.push(res.data.filePath)
-                    })
-                }
-            }
-        })
-    })
-</script>
-</body>
-</html>
