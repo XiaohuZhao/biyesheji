@@ -1,23 +1,20 @@
 let AchievementService = {
-    showList: function () {
-        globalService.setSectionTagUI(`
-            <button id="newAchievement" style="margin-top: 32px;margin-left: 32px" onclick="AchievementService.addPaper()" type="button" class="layui-btn">新增论文</button>
-            <button id="newAchievement" style="margin-top: 32px;margin-left: 32px" onclick="AchievementService.addBook()" type="button" class="layui-btn">新增著作</button>
-            <button id="newAchievement" style="margin-top: 32px;margin-left: 32px" onclick="AchievementService.addProject()" type="button" class="layui-btn">新增项目结题</button>
-            <button id="newAchievement" style="margin-top: 32px;margin-left: 32px" onclick="AchievementService.addAwards()" type="button" class="layui-btn">新增获奖</button>
+    showList: function (who) {
+        globalService.setSectionTagUI(`${who==='self'?'<button id="newAchievement" style="margin-top: 32px;margin-left: 32px" onclick="AchievementService.addPaper()" type="button" class="layui-btn">新增论文</button>\n            <button id="newAchievement" style="margin-top: 32px;margin-left: 32px" onclick="AchievementService.addBook()" type="button" class="layui-btn">新增著作</button>\n            <button id="newAchievement" style="margin-top: 32px;margin-left: 32px" onclick="AchievementService.addProject()" type="button" class="layui-btn">新增项目结题</button>':''}
             <table id="demoId" class="layui-hide" lay-filter="achievement"></table>
         `);
         $.ajax({
             headers: {
                 "X-Authentication-Token": globalService.tokenOfHeader//此处放置请求到的用户token
             },
-            url: `${globalService.basePath}/achievement/self`,
+            url: `${globalService.basePath}/achievement/${who}`,
             type: "get",
             contentType: "application/json",
             dataType: 'json',
             cache: false,
             async: true,
             success: function (res) {
+                console.log("res", res);
                 layui.use('table', function () {
                     for (let row of res.data) {
                         row.status = row.status === 1 ? "已审核" : "未审核";
@@ -31,12 +28,12 @@ let AchievementService = {
                             , {field: 'firstAuthor', width: '8%', title: '第一作者'}
                             , {field: 'department', width: '10%', title: '所属部门'}
                             , {field: 'subject', width: '10%', title: '一级学科'}
-                            , {field: 'publishType', width: '8%', title: '类别'}
                             , {field: 'publishTime', width: '10%', title: '发布日期', sort: true}
                             , {field: 'categories', width: '10%', title: '学课门类'}
                             , {field: 'status', width: '8%', title: '审核状态'}
                             , {field: 'reviewTime', width: '10%', title: '审核时间'}
                             , {field: 'type', width: '8%', title: '类型'}
+                            , {field: 'comment', width: '8%', title: '审核意见'}
                             , {field: 'operate', width: '8%', title: '操作'}
                         ]]
                         , skin: 'line' //表格风格
@@ -293,7 +290,10 @@ let AchievementService = {
                 dataType: 'json',
                 cache: false,
                 async: true,
-                data: JSON.stringify(data)
+                data: JSON.stringify(data),
+                success: function (data) {
+                    AchievementService.showList()
+                }
             })
         });
         this.authors = [];
@@ -535,7 +535,10 @@ let AchievementService = {
                 dataType: 'json',
                 cache: false,
                 async: true,
-                data: JSON.stringify(data)
+                data: JSON.stringify(data),
+                success: function (data) {
+                    AchievementService.showList()
+                }
             })
         });
         this.authors = [];
@@ -733,7 +736,10 @@ let AchievementService = {
                 dataType: 'json',
                 cache: false,
                 async: true,
-                data: JSON.stringify(data)
+                data: JSON.stringify(data),
+                success: function (data) {
+                    AchievementService.showList()
+                }
             })
         });
         this.authors = [];
@@ -951,7 +957,10 @@ let AchievementService = {
                 dataType: 'json',
                 cache: false,
                 async: true,
-                data: JSON.stringify(data)
+                data: JSON.stringify(data),
+                success: function (data) {
+                    AchievementService.showList()
+                }
             })
         });
         this.authors = [];
@@ -971,8 +980,12 @@ let AchievementService = {
                 dataType: 'json',
                 cache: false,
                 async: true,
+                success: function (result) {
+                    console.log(result)
+                    AchievementService.showList()
+                }
             });
-            AchievementService.showList();
+
             layer.close(confirm)
         }, function (index) {
 
@@ -1048,7 +1061,7 @@ let AchievementService = {
         })
     },
     showPaper: function (data) {
-        console.log(data.status !== 1 && data.id!==null)
+        console.log(data.status !== 1 && data.id !== null)
         globalService.setSectionTagUI(
             `<style>
                 label.layui-form-label {
@@ -1182,7 +1195,7 @@ let AchievementService = {
                             <input type="text" value="${data.comment === null ? '' : data.comment}" disabled class="layui-input">
                         </div>
                     </span>
-                    <div style="${data.status !== 1 && data.id!==null ? '' : 'display:none'}">
+                    <div style="${data.status !== 1 && data.id !== null ? '' : 'display:none'}">
                         <div class="layui-input-inline">
                             <button type="button" class="layui-btn" onclick="AchievementService.review(${data.id},1)">
                                 <i class="layui-icon">&#xe605;</i>通过
@@ -1340,14 +1353,26 @@ let AchievementService = {
                         <input type="text" value="${data.status === 0 ? '未审核' : data.status === 1 ? '已通过' : '未通过'}" disabled
                                class="layui-input">
                     </div>
-                    <label class="layui-form-label" style="width: 90px">审核日期</label>
-                    <div class="layui-input-inline">
-                        <input type="text" value="${data.reviewTime === null ? '未审核' : data.reviewTime}" disabled
-                               class="layui-input">
-                    </div>
-                    <label class="layui-form-label" style="width: 90px">审核意见</label>
-                    <div class="layui-input-inline">
-                        <input type="text" value="${data.comment === null ? '未审核' : data.comment}" disabled class="layui-input">
+                    <span style="${data.status === 1 ? '' : 'display:none'}">
+                        <label class="layui-form-label" style="width: 90px">审核日期</label>
+                        <div class="layui-input-inline">
+                            <input type="text" value="${data.reviewTime}" disabled
+                                   class="layui-input">
+                        </div>
+                        <label class="layui-form-label" style="width: 90px">审核意见</label>
+                        <div class="layui-input-inline">
+                            <input type="text" value="${data.comment === null ? '' : data.comment}" disabled class="layui-input">
+                        </div>
+                    </span>
+                    <div style="${data.status !== 1 && data.id !== null ? '' : 'display:none'}">
+                        <div class="layui-input-inline">
+                            <button type="button" class="layui-btn" onclick="AchievementService.review(${data.id},1)">
+                                <i class="layui-icon">&#xe605;</i>通过
+                            </button>
+                            <button type="button" class="layui-btn layui-btn-danger" onclick="AchievementService.review(${data.id},-1)">
+                                <i class="layui-icon">&#x1006;</i>拒绝
+                            </button>
+                        </div>
                     </div>
                 </div>
             </form>`);
@@ -1467,14 +1492,26 @@ let AchievementService = {
                         <input type="text" value="${data.status === 0 ? '未审核' : data.status === 1 ? '已通过' : '未通过'}" disabled
                                class="layui-input">
                     </div>
-                    <label class="layui-form-label" style="width: 90px">审核日期</label>
-                    <div class="layui-input-inline">
-                        <input type="text" value="${data.reviewTime === null ? '未审核' : data.reviewTime}" disabled
-                               class="layui-input">
-                    </div>
-                    <label class="layui-form-label" style="width: 90px">审核意见</label>
-                    <div class="layui-input-inline">
-                        <input type="text" value="${data.comment === null ? '未审核' : data.comment}" disabled class="layui-input">
+                    <span style="${data.status === 1 ? '' : 'display:none'}">
+                        <label class="layui-form-label" style="width: 90px">审核日期</label>
+                        <div class="layui-input-inline">
+                            <input type="text" value="${data.reviewTime}" disabled
+                                   class="layui-input">
+                        </div>
+                        <label class="layui-form-label" style="width: 90px">审核意见</label>
+                        <div class="layui-input-inline">
+                            <input type="text" value="${data.comment === null ? '' : data.comment}" disabled class="layui-input">
+                        </div>
+                    </span>
+                    <div style="${data.status !== 1 && data.id !== null ? '' : 'display:none'}">
+                        <div class="layui-input-inline">
+                            <button type="button" class="layui-btn" onclick="AchievementService.review(${data.id},1)">
+                                <i class="layui-icon">&#xe605;</i>通过
+                            </button>
+                            <button type="button" class="layui-btn layui-btn-danger" onclick="AchievementService.review(${data.id},-1)">
+                                <i class="layui-icon">&#x1006;</i>拒绝
+                            </button>
+                        </div>
                     </div>
                 </div>
             </form>`
@@ -1616,14 +1653,26 @@ let AchievementService = {
                         <input type="text" value="${data.status === 0 ? '未审核' : data.status === 1 ? '已通过' : '未通过'}" disabled
                                class="layui-input">
                     </div>
-                    <label class="layui-form-label" style="width: 90px">审核日期</label>
-                    <div class="layui-input-inline">
-                        <input type="text" value="${data.reviewTime === null ? '未审核' : data.reviewTime}" disabled
-                               class="layui-input">
-                    </div>
-                    <label class="layui-form-label" style="width: 90px">审核意见</label>
-                    <div class="layui-input-inline">
-                        <input type="text" value="${data.comment === null ? '未审核' : data.comment}" disabled class="layui-input">
+                    <span style="${data.status === 1 ? '' : 'display:none'}">
+                        <label class="layui-form-label" style="width: 90px">审核日期</label>
+                        <div class="layui-input-inline">
+                            <input type="text" value="${data.reviewTime}" disabled
+                                   class="layui-input">
+                        </div>
+                        <label class="layui-form-label" style="width: 90px">审核意见</label>
+                        <div class="layui-input-inline">
+                            <input type="text" value="${data.comment === null ? '' : data.comment}" disabled class="layui-input">
+                        </div>
+                    </span>
+                    <div style="${data.status !== 1 && data.id !== null ? '' : 'display:none'}">
+                        <div class="layui-input-inline">
+                            <button type="button" class="layui-btn" onclick="AchievementService.review(${data.id},1)">
+                                <i class="layui-icon">&#xe605;</i>通过
+                            </button>
+                            <button type="button" class="layui-btn layui-btn-danger" onclick="AchievementService.review(${data.id},-1)">
+                                <i class="layui-icon">&#x1006;</i>拒绝
+                            </button>
+                        </div>
                     </div>
                 </div>
             </form>`);
@@ -1721,9 +1770,11 @@ let AchievementService = {
                     dataType: 'json',
                     cache: false,
                     async: true,
-                    data: JSON.stringify({comment, status})
+                    data: JSON.stringify({comment, status}),
+                    success:function (data) {
+                        AchievementService.showList('list');
+                    }
                 });
-                AchievementService.showList();
                 layer.close(open)
             }
         });

@@ -22,7 +22,7 @@ var AnnouncementService = {
             //2.发送ajax.
             $.ajax({
                 headers: {"X-Authentication-Token": globalService.tokenOfHeader},
-                url: globalService.basePath + '/announcement',
+                url: globalService.basePath + '/announcement/user',
                 type: "get",
                 contentType: "application/json",
                 dataType: 'json',

@@ -64,7 +64,7 @@
                 </li>
                 <ul class="children">
                     <li onclick="AnnouncementService.showList()"><a href="javascript:void(0)">公告管理</a></li>
-                    <li onclick="AchievementService.showList()"><a href="javascript:void(0)">我的成果</a></li>
+                    <li onclick="AchievementService.showList('self')"><a href="javascript:void(0)">我的成果</a></li>
                     <li><a href="#">信息采集</a></li>
                 </ul>
 
@@ -74,7 +74,7 @@
                 <ul class="children">
                     <li><a href="javascript:void(0)">公告管理</a></li>
                     <li onclick="UserService.operation.showListOperation()"><a href="javascript:void(0)">用户管理</a></li>
-                    <li><a href="javascript:void(0)">权限管理</a></li>
+                    <li onclick="AchievementService.showList('list')"><a href="javascript:void(0)">申报项目</a></li>
                 </ul>
 
                 <li onclick="" class="unit-parent">
