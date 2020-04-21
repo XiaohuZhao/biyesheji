@@ -15,13 +15,13 @@ let UserService = {
                     },
                     success: function (res) {
                         if (res.code == 200) {
-                            layer.msg("返回成功 :" +JSON.stringify(res.data));
+                            layer.msg("返回成功 :" + JSON.stringify(res.data));
 
-                            sessionStorage.setItem("name",res.data.name);
-                            sessionStorage.setItem("age",res.data.age);
-                            sessionStorage.setItem("gender",res.data.gender);
-                            sessionStorage.setItem("password",res.data.password);
-                            sessionStorage.setItem("telephone",res.data.telephone);
+                            sessionStorage.setItem("name", res.data.name);
+                            sessionStorage.setItem("age", res.data.age);
+                            sessionStorage.setItem("gender", res.data.gender);
+                            sessionStorage.setItem("password", res.data.password);
+                            sessionStorage.setItem("telephone", res.data.telephone);
 
                             globalService.setSectionTagUI(UserView.lookMyselfUserInfo);
 
@@ -60,7 +60,7 @@ let UserService = {
             });
 
         },
-        editUserRequest: function (id) {
+        editMyselfUserInfoRequest: function (id) {
             let name = $('.name').val();
             let password = $('.password').val();
             let newTelephone = $('.newTelephone').val();
@@ -82,11 +82,11 @@ let UserService = {
                         layer.msg("修改成功");
 
                         //更新本地数据，页面数据回显。
-                        sessionStorage.setItem("name",res.data.name);
-                        sessionStorage.setItem("age",res.data.age);
-                        sessionStorage.setItem("password",res.data.password);
-                        sessionStorage.setItem("gender",res.data.gender);
-                        sessionStorage.setItem("telephone",res.data.telephone);
+                        sessionStorage.setItem("name", res.data.name);
+                        sessionStorage.setItem("age", res.data.age);
+                        sessionStorage.setItem("password", res.data.password);
+                        sessionStorage.setItem("gender", res.data.gender);
+                        sessionStorage.setItem("telephone", res.data.telephone);
                         globalService.setSectionTagUI(UserView.lookMyselfUserInfo());
                     } else {
                         layer.msg(res.msg);
@@ -159,11 +159,52 @@ let UserService = {
                 }
             });
         },
+        editOtherUserRequest() {
+            let name = $('.name').val();
+            let password = $('.password').val();
+            let telephone = $('.newTelephone').val();
+            let age = $('.age').val();
+            let gender = $('.gender').val();
+
+            let param = {name:name,password:password,telephone: telephone,age:age,gender:gender};
+
+            $.ajax({
+                headers: {"X-Authentication-Token": globalService.tokenOfHeader},
+                url: globalService.basePath + '/user/'+telephone,
+                type: "PUT",
+                cache: false,
+                async: true,
+                contentType: "application/json;charset=utf-8",
+                data: JSON.stringify(param),
+                beforeSend: function () {
+                    this.layerIndex = layer.load(0, {shade: [0.5, '#393D49']});
+                },
+                success: function (res) {
+                    if (res.code == 200) {
+                        //layer.msg("返回成功 :" + JSON.stringify(res.data));
+
+                        sessionStorage.setItem("name", res.data.name);
+                        sessionStorage.setItem("age", res.data.age);
+                        sessionStorage.setItem("gender", res.data.gender);
+                        sessionStorage.setItem("password", res.data.password);
+                        sessionStorage.setItem("telephone", res.data.telephone);
+
+                        globalService.setSectionTagUI(UserView.lookOtherUserInfo());
+
+                    }
+                },
+                complete: function () {
+                    layer.close(this.layerIndex);
+                }
+            });
+
+
+
+        }
     },
     //页面交互
     operation: {
         showListOperation: function () {
-            //  lauui.use(["jquery","layer","form",'table'],function(){});
             layui.use(['table'], function () {
                 let table = layui.table;
                 //1.清楚上一次展示的数据,并设置新的视图。
@@ -176,10 +217,10 @@ let UserService = {
                 //         margin: 10px 0;
                 //     }
 
-                //绑定行点击事件。
-                table.on('row(demoId)', UserService.operation.lookOperation);
+                //绑定行点击事件。 // UserService.operation.lookLineOperation
+                //  table.on('row(demoId)',UserService.operation.lookLineOperation);
                 table.on('toolbar(demoId)', function (obj) {
-                    console.log(obj)
+                    // console.log(obj)
 
                     // 行事件
                     var checkStatus = table.checkStatus(obj.config.id); //获取选中行状态
@@ -208,17 +249,26 @@ let UserService = {
             globalService.pop(UserView.addUserView);
         },
         editOperation(checkStatus) {
-            var data = checkStatus.data;  //获取选中行数据
-            // alert(JSON.stringify(data.length));
-            if (data.length == 0) {
-                layer.msg("当前未选择，请选择一个公告。");
-                return;
-            } else if (data.length > 1) {
-                layer.msg("请选择唯一的公告进行编辑。");
-                return;
-            } else if (data.length == 1) {
-                UserService.request.editUserRequest(data[0].id);
-            }
+            layui.use(['layer'], function () {
+                let layer = layui.layer;
+                let data = checkStatus.data;  //获取选中行数据
+                if (data.length == 0) {
+                    layer.msg("当前未选择，请选择一个公告。");
+                    return;
+                } else if (data.length > 1) {
+                    layer.msg("请选择唯一用户进行编辑。");
+                    return;
+                } else if (data.length == 1) {
+                    sessionStorage.setItem("name", data[0].name);
+                    sessionStorage.setItem("age", data[0].age);
+                    sessionStorage.setItem("password", data[0].password);
+                    sessionStorage.setItem("gender", data[0].gender);
+                    sessionStorage.setItem("telephone", data[0].telephone);
+                    globalService.setSectionTagUI(UserView.lookOtherUserInfo());
+
+                    // UserService.request.editUserRequest(data[0].id);
+                }
+            });
         },
         deleteOperation(checkStatus) {
             var data = checkStatus.data;  //获取选中行数据
@@ -240,7 +290,7 @@ let UserService = {
         updateUserOperation() {
             UserService.request.lookMyInfoRequest();
         },
-        lookOperation: function (obj) {
+        lookLineOperation: function (obj) {
             let lineData = obj.data;
 
             // for( field in lineData){
