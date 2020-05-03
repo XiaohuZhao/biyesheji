@@ -1,6 +1,6 @@
 let AchievementService = {
     showList: function (who) {
-        globalService.setSectionTagUI(`${who==='self'?'<button id="newAchievement" style="margin-top: 32px;margin-left: 32px" onclick="AchievementService.addPaper()" type="button" class="layui-btn">新增论文</button>\n            <button id="newAchievement" style="margin-top: 32px;margin-left: 32px" onclick="AchievementService.addBook()" type="button" class="layui-btn">新增著作</button>\n            <button id="newAchievement" style="margin-top: 32px;margin-left: 32px" onclick="AchievementService.addProject()" type="button" class="layui-btn">新增项目结题</button>':''}
+        globalService.setSectionTagUI(`${who === 'self' ? '<button id="newAchievement" style="margin-top: 32px;margin-left: 32px" onclick="AchievementService.addPaper()" type="button" class="layui-btn">新增论文</button>\n            <button id="newAchievement" style="margin-top: 32px;margin-left: 32px" onclick="AchievementService.addBook()" type="button" class="layui-btn">新增著作</button>\n            <button id="newAchievement" style="margin-top: 32px;margin-left: 32px" onclick="AchievementService.addProject()" type="button" class="layui-btn">新增项目结题</button>' : ''}
             <table id="demoId" class="layui-hide" lay-filter="achievement"></table>
         `);
         $.ajax({
@@ -1771,7 +1771,7 @@ let AchievementService = {
                     cache: false,
                     async: true,
                     data: JSON.stringify({comment, status}),
-                    success:function (data) {
+                    success: function (data) {
                         AchievementService.showList('list');
                     }
                 });

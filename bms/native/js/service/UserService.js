@@ -1,4 +1,5 @@
 let UserService = {
+    groups: [],
     //页面请求
     request: {
         lookMyInfoRequest() {
@@ -15,8 +16,7 @@ let UserService = {
                     },
                     success: function (res) {
                         if (res.code == 200) {
-                            layer.msg("返回成功 :" + JSON.stringify(res.data));
-
+                            sessionStorage.setItem("id", res.data.id);
                             sessionStorage.setItem("name", res.data.name);
                             sessionStorage.setItem("age", res.data.age);
                             sessionStorage.setItem("gender", res.data.gender);
@@ -109,6 +109,7 @@ let UserService = {
             let newTelephone = $('.newTelephone').val();
             let age = $('.age').val();
             let gender = $('.gender').val();
+            gender = gender === "1" || "男" ? 1 : 2;
 
             layer.msg("add Request");
             let param = {name: name, password: password, newTelephone: newTelephone, age: age, gender: gender};
@@ -166,11 +167,11 @@ let UserService = {
             let age = $('.age').val();
             let gender = $('.gender').val();
 
-            let param = {name:name,password:password,telephone: telephone,age:age,gender:gender};
+            let param = {name: name, password: password, telephone: telephone, age: age, gender: gender};
 
             $.ajax({
                 headers: {"X-Authentication-Token": globalService.tokenOfHeader},
-                url: globalService.basePath + '/user/'+telephone,
+                url: globalService.basePath + '/user/' + telephone,
                 type: "PUT",
                 cache: false,
                 async: true,
@@ -199,7 +200,6 @@ let UserService = {
             });
 
 
-
         }
     },
     //页面交互
@@ -219,7 +219,7 @@ let UserService = {
 
                 //绑定行点击事件。 // UserService.operation.lookLineOperation
                 //  table.on('row(demoId)',UserService.operation.lookLineOperation);
-                table.on('toolbar(demoId)', function (obj) {
+                table.on('toolbar(userTable)', function (obj) {
                     // console.log(obj)
 
                     // 行事件
@@ -317,6 +317,9 @@ let UserService = {
                 async: true,
                 success: function (res) {
                     if (res.code == 200) {
+                        for (let user of res.data) {
+                            user.gender = user.gender == 1 ? '男' : '女'
+                        }
                         layui.table.render({
                             elem: '#demoId'//绑定元素
                             , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
@@ -335,7 +338,6 @@ let UserService = {
                                 , {field: 'gender', title: '性别'}
                                 , {field: 'age', title: '年龄'}
                                 , {field: 'telephone', title: '电话'}
-                                , {field: 'password', title: '密码'}
                             ]]
                             , skin: 'line' //表格风格
                             , even: true
@@ -365,6 +367,79 @@ let UserService = {
                     layer.msg("接口不可用！");
                 }
             });
+        },
+        showRight: function () {
+            $.ajax({
+                headers: {
+                    "X-Authentication-Token": globalService.tokenOfHeader//此处放置请求到的用户token
+                },
+                url: `${globalService.basePath}/groupAndRole/user/group`,
+                type: "get",
+                contentType: "application/json",
+                dataType: 'json',
+                cache: false,
+                async: true,
+                success: function (result) {
+                    if (result.ret) {
+                        debugger
+                        let html = `<form class="layui-form" style="margin-top: 32px;">`;
+                        for (let row of result.data) {
+                            console.log(row.groupId);
+                            html +=
+                                `<div class="layui-form-item" style="margin-top: 24px;">
+                                <label class="layui-form-label">姓名</label>
+                                <div class="layui-input-inline">
+                                    <input type="text" required lay-verify="required" value="${row.username}" disabled
+                                           autocomplete="off" class="layui-input">
+                                </div>
+                                <label class="layui-form-label">用户组</label>
+                                <div class="layui-input-inline" style="width: 500px;">
+                                  <input type="radio" userId="${row.userId}" lay-filter="group" name="group${row.userId}" value="1" title="教师" ${row.groupName === '教师' ? 'checked' : ''}>
+                                  <input type="radio" userId="${row.userId}" lay-filter="group" name="group${row.userId}" value="2" title="系主任" ${row.groupName === '系主任' ? 'checked' : ''}>
+                                  <input type="radio" userId="${row.userId}" lay-filter="group" name="group${row.userId}" value="3" title="管理员" ${row.groupName === '管理员' ? 'checked' : ''}>
+                                </div>
+                            </div>
+                            <hr>
+                            `
+                        }
+                        html += `</form>`
+                        globalService.setSectionTagUI(html);
+                        layui.use('form', function () {
+                            var form = layui.form;
+                            form.render();
+                            form.on('radio(group)', function (data) {
+                                let $radio = $(data.elem);
+                                let groupId = $radio.val();
+                                let userId = $radio.attr("userId");
+                                UserService.changeGroup(userId, groupId);
+                            });
+                        })
+                    } else {
+                        layer.msg(result.msg)
+                    }
+                }
+            });
         }
     },
+    changeGroup: function (userId, groupId) {
+        debugger
+        $.ajax({
+            headers: {
+                "X-Authentication-Token": globalService.tokenOfHeader//此处放置请求到的用户token
+            },
+            url: `${globalService.basePath}/groupAndRole/user/group/${userId}/${groupId}`,
+            type: "put",
+            contentType: "application/json",
+            dataType: 'json',
+            cache: false,
+            async: true,
+            success: function (result) {
+                if (result.ret) {
+                    UserService.showRight()
+                } else {
+                    layer.msg(result.msg)
+                }
+            }
+        });
+    }
 }

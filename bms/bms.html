@@ -17,6 +17,9 @@
     <script type="text/javascript" src="native/js/util/global.js" charset="UTF-8"></script>
     <script type="text/javascript" src="native/js/service/AnnouncementService.js" charset="UTF-8"></script>
     <script type="text/javascript" src="native/js/service/AchievementService.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="native/js/service/ScoreService.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="native/js/service/CourseService.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="native/js/service/SourceService.js" charset="UTF-8"></script>
     <script type="text/javascript" src="native/js/service/UserService.js" charset="UTF-8"></script>
     <script type="text/javascript" src="native/js/view/UserView.js" charset="UTF-8"></script>
     <script type="text/javascript" src="native/js/util/DataBinding.js" charset="UTF-8"></script>
@@ -46,11 +49,11 @@
 
         <!--   右上角用户中心[个人中心，消息等等...]     -->
         <div class="login-part fr">
-                <!--       userInfo  用户信息模块         -->
-                <ul style="width: inherit;height: inherit">
-                    <li onclick=""><a href="javascript:void(0)"  class="show-user-name">用户</a></li>
-                    <li onclick="UserService.operation.updateUserOperation()"><a href="javascript:void(0)" >修改信息</a></li>
-                </ul>
+            <!--       userInfo  用户信息模块         -->
+            <ul style="width: inherit;height: inherit">
+                <li onclick=""><a href="javascript:void(0)" class="show-user-name">用户</a></li>
+                <li onclick="UserService.operation.updateUserOperation()"><a href="javascript:void(0)">修改信息</a></li>
+            </ul>
         </div>
     </header>
 
@@ -63,35 +66,36 @@
                     <a href="javascript:void(0)">科研信息管理<i class="iconfont icon-zhankai"></i></a>
                 </li>
                 <ul class="children">
-                    <li onclick="AnnouncementService.showList()"><a href="javascript:void(0)">公告管理</a></li>
                     <li onclick="AchievementService.showList('self')"><a href="javascript:void(0)">我的成果</a></li>
                     <li><a href="#">信息采集</a></li>
+                    <li onclick="ScoreService.show()"><a href="javascript:void(0)">成绩分布</a></li>
+                    <li onclick="SourceService.showList()"><a href="javascript:void(0)">教学资源</a></li>
+                    <li onclick="CourseService.show('self')"><a href="javascript:void(0)">我的课程</a></li>
+                    <li onclick="AnnouncementService.showList('self')"><a href="javascript:void(0)">我的消息</a></li>
                 </ul>
 
                 <li onclick="" class="unit-parent">
                     <a href="javascript:void(0)">系统管理子系统<i class="iconfont icon-zhankai"></i></a>
                 </li>
                 <ul class="children">
-                    <li><a href="javascript:void(0)">公告管理</a></li>
-                    <li onclick="UserService.operation.showListOperation()"><a href="javascript:void(0)">用户管理</a></li>
                     <li onclick="AchievementService.showList('list')"><a href="javascript:void(0)">申报项目</a></li>
+                    <li onclick="CourseService.show('')"><a href="javascript:void(0)">排课管理</a></li>
                 </ul>
 
                 <li onclick="" class="unit-parent">
                     <a href="javascript:void(0)">权限管理系统<i class="iconfont icon-zhankai"></i></a>
                 </li>
                 <ul class="children">
-                    <li><a href="javascript:void(0)">公告管理</a></li>
-                    <li><a href="javascript:void(0)">用户管理</a></li>
-                    <li><a href="javascript:void(0)">权限管理</a></li>
+                    <li onclick="AnnouncementService.showList()"><a href="javascript:void(0)">公告管理</a></li>
+                    <li onclick="UserService.operation.showListOperation()"><a href="javascript:void(0)">用户管理</a></li>
+                    <li onclick="UserService.operation.showRight()"><a href="javascript:void(0)">权限管理</a></li>
                 </ul>
             </ul>
         </aside>
 
 
         <!--        UI 视图           -->
-        <section >
-
+        <section>
 
         </section>
     </div>
@@ -101,15 +105,30 @@
 
     <!--     抽不出来的JS部分 -->
     <script>
+        layui.use('form', function () {
+            var form = layui.form;
+            form.render();
+        })
         /**
          * 展开，收缩 单元的代码。
          * MENU结构 ul.card-menu>(li.unit-parent+ul>li.children*3)*2
          */
         (function () {
-
-                //发送ajax 的时候，从这里拿token 即可。
-                var token = localStorage.getItem("token");
-
+                if (!localStorage.getItem('userRoles')) {
+                    console.log('load user info');
+                    $.ajax({
+                        headers: {
+                            "X-Authentication-Token": globalService.tokenOfHeader//此处放置请求到的用户token
+                        },
+                        url: `${globalService.basePath}/user/`,
+                        type: 'get',
+                        success: function (res) {
+                            if (res.ret) {
+                                localStorage.setItem('userInfo', res.data);
+                            }
+                        }
+                    })
+                }
                 //先隐藏所有模块，根据权限显示参数显示模块
                 $('.main-view>aside>ul>li').hide();
                 $('.main-view>aside>ul>.children').hide();
@@ -148,14 +167,13 @@
                             if (key_value_list[0] == "showList") {
                                 showListString = key_value_list[1];
                             }
-                            if(key_value_list[0] == "username"){
-                               let username = key_value_list[1];
+                            if (key_value_list[0] == "username") {
+                                let username = key_value_list[1];
                                 $(".show-user-name").html(username);
                             }
                         }
                     }
                 }
-
 
 
                 //取 参数 showList 后面的值。是一个字符串
@@ -242,6 +260,46 @@
                 $(".unit-parent").on("click", closeAndOpenCallBack);
             }
         )();
+    </script>
+
+    <script src="https://cdn.bootcss.com/echarts/3.7.1/echarts.min.js"></script>
+    <script>
+        function drewPie(data) {
+            let option = {
+                // backgroundColor: '#262626',
+
+                title: {
+                    text: '学生成绩分布',
+                    left: 'center',
+                    top: 20,
+                    textStyle: {
+                        color: '#262626'
+                    }
+                },
+
+                tooltip: {
+                    trigger: 'item',
+                    formatter: '{a} <br/>{b} : {c} ({d}%)'
+                },
+                series: [
+                    {
+                        name: '学生成绩',
+                        type: 'pie',
+                        radius: '75%',
+                        center: ['50%', '50%'],
+                        data: data,
+                        roseType: "radius",
+                        color: ['#ff7f50', '#87cefa', '#da70d6', '#32cd32', '#6495ed',
+                            '#ff69b4', '#ba55d3', '#cd5c5c', '#ffa500', '#40e0d0',
+                            '#1e90ff', '#ff6347', '#7b68ee', '#00fa9a', '#ffd700',
+                            '#6699FF', '#ff6666', '#3cb371', '#b8860b', '#30e0e0'
+                        ]
+                    }
+                ]
+            };
+            const myChart = echarts.init(document.getElementById('chart'));
+            myChart.setOption(option)
+        }
     </script>
 </div>
 </body>

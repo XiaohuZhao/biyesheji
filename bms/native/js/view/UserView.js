@@ -1,5 +1,5 @@
 var UserView = {
-    showUserList: "<table id=\"demoId\" class=\"layui-hide\" lay-filter=\"demoId\"></table>\n" +
+    showUserList: "<table id=\"demoId\" class=\"layui-hide\" lay-filter=\"userTable\"></table>\n" +
         "            \n" +
         "            <script type=\"text/html\" id=\"toolbarDemo\">\n" +
         "\n" +
@@ -69,7 +69,7 @@ var UserView = {
             "  <div class=\"layui-form-item p-all-20\">\n" +
             "    <label class=\"layui-form-label\">密码</label>\n" +
             "    <div class=\"layui-input-block\">\n" +
-            "      <input value='" + DataBinding.getValueFromSessionStorageByKey('password') + "'  type=\"text\" name=\"password\" lay-verify=\"password\" autocomplete=\"off\" placeholder=\"请输入用户姓名\" class=\"layui-input password\">\n" +
+            "      <input value=''  type=\"text\" name=\"password\" lay-verify=\"password\" autocomplete=\"off\" placeholder=\"如需更改请输入新的密码\" class=\"layui-input password\">\n" +
             "    </div>\n" +
             "  </div>" +
 
@@ -90,7 +90,7 @@ var UserView = {
             "  <div class=\"layui-form-item p-all-20\">\n" +
             "    <label class=\"layui-form-label\">性别</label>\n" +
             "    <div class=\"layui-input-block\">\n" +
-            "      <input value='" + DataBinding.getValueFromSessionStorageByKey('gender') + "'  type=\"text\" name=\"gender\" lay-verify=\"text\" autocomplete=\"off\" placeholder=\"请输入用户性别\" class=\"layui-input gender\">\n" +
+            "      <input value='" + (DataBinding.getValueFromSessionStorageByKey('gender')==1||DataBinding.getValueFromSessionStorageByKey('gender')=='男'?'男':'女') + "'  type=\"text\" name=\"gender\" lay-verify=\"text\" autocomplete=\"off\" placeholder=\"请输入用户性别\" class=\"layui-input gender\">\n" +
             "    </div>\n" +
             "  </div>" +
 
@@ -102,6 +102,7 @@ var UserView = {
             "  </div>";
     },
     lookOtherUserInfo: function () {
+        debugger
         return "<div class=\"layui-form-item p-all-20\">\n" +
             "    <label class=\"layui-form-label\">姓名</label>\n" +
             "    <div class=\"layui-input-block\">\n" +
@@ -113,7 +114,7 @@ var UserView = {
             "  <div class=\"layui-form-item p-all-20\">\n" +
             "    <label class=\"layui-form-label\">密码</label>\n" +
             "    <div class=\"layui-input-block\">\n" +
-            "      <input value='" + DataBinding.getValueFromSessionStorageByKey('password') + "'  type=\"text\" name=\"password\" lay-verify=\"password\" autocomplete=\"off\" placeholder=\"请输入用户姓名\" class=\"layui-input password\">\n" +
+            "      <input value=''  type=\"text\" name=\"password\" lay-verify=\"password\" autocomplete=\"off\" placeholder=\"如需更改请输入新的密码\" class=\"layui-input password\">\n" +
             "    </div>\n" +
             "  </div>" +
 
@@ -134,7 +135,7 @@ var UserView = {
             "  <div class=\"layui-form-item p-all-20\">\n" +
             "    <label class=\"layui-form-label\">性别</label>\n" +
             "    <div class=\"layui-input-block\">\n" +
-            "      <input value='" + DataBinding.getValueFromSessionStorageByKey('gender') + "'  type=\"text\" name=\"gender\" lay-verify=\"text\" autocomplete=\"off\" placeholder=\"请输入用户性别\" class=\"layui-input gender\">\n" +
+            "      <input value='" + (DataBinding.getValueFromSessionStorageByKey('gender')==1||DataBinding.getValueFromSessionStorageByKey('gender')=='男'?'男':'女') + "'  type=\"text\" name=\"gender\" lay-verify=\"text\" autocomplete=\"off\" placeholder=\"请输入用户性别\" class=\"layui-input gender\">\n" +
             "    </div>\n" +
             "  </div>" +
 

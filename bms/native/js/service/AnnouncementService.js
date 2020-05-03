@@ -1,5 +1,5 @@
 var AnnouncementService = {
-    showList: function () {
+    showList: function (who) {
 
         //  lauui.use(["jquery","layer","form",'table'],function(){});
         layui.use(["jquery", "layer", "form", 'table'], function () {
@@ -13,16 +13,17 @@ var AnnouncementService = {
                 "                <div class=\"layui-btn-group  ml-1 mt-2\">\n" +
                 "                    <button type=\"button\" class=\"layui-btn layui-btn-primary layui-btn-sm\"  lay-event=\"addData\"><i class=\"layui-icon\"></i>\n" +
                 "                    </button>\n" +
- /*               "                    <button type=\"button\" class=\"layui-btn layui-btn-primary layui-btn-sm\"  lay-event=\"editData\"><i class=\"layui-icon\"></i>\n" +
-                "                    </button>\n" +*/
+                /*               "                    <button type=\"button\" class=\"layui-btn layui-btn-primary layui-btn-sm\"  lay-event=\"editData\"><i class=\"layui-icon\"></i>\n" +
+                               "                    </button>\n" +*/
                 "                    <button type=\"button\" class=\"layui-btn layui-btn-primary layui-btn-sm\"  lay-event=\"deleteData\"><i class=\"layui-icon\"></i>\n" +
                 "                    </button>\n" +
                 "                </div>\n" +
                 "            </script>");
             //2.发送ajax.
+            debugger
             $.ajax({
                 headers: {"X-Authentication-Token": globalService.tokenOfHeader},
-                url: globalService.basePath + '/announcement/user',
+                url: globalService.basePath + '/announcement' + (who === 'self' ? '/user' : ''),
                 type: "get",
                 contentType: "application/json",
                 dataType: 'json',
@@ -33,7 +34,7 @@ var AnnouncementService = {
                         table.render({
                             elem: '#demoId'//绑定元素
                             , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-                            , toolbar: '#toolbarDemo'
+                            , toolbar: who === 'self' ? '' : '#toolbarDemo'
                             , cols: [[
                                 {type: 'checkbox', width: 70},
                                 //{type:'radio'},
@@ -87,8 +88,8 @@ var AnnouncementService = {
                 switch (obj.event) {
                     case 'addData':
                         var data = checkStatus.data;  //获取选中行数据
-                       // console.log(JSON.stringify(data));
-                       // layer.msg("add");
+                        // console.log(JSON.stringify(data));
+                        // layer.msg("add");
                         //添加数据。
                         globalService.pop("  <div class=\"layui-form-item p-all-20\">\n" +
                             "    <label class=\"layui-form-label\">公告标题</label>\n" +
@@ -115,14 +116,14 @@ var AnnouncementService = {
                         alert(JSON.stringify(data.length));
 
 
-                        if(data.length==0){
+                        if (data.length == 0) {
                             layer.msg("当前未选择，请选择一个公告。");
                             return;
-                        }else if(data.length>1){
+                        } else if (data.length > 1) {
                             layer.msg("请选择唯一的公告进行编辑。");
                             return;
-                        }else if(data.length == 1){
-                        AnnouncementService.editAnnouncement(data[0].id);
+                        } else if (data.length == 1) {
+                            AnnouncementService.editAnnouncement(data[0].id);
                         }
 
                         break;
@@ -188,10 +189,8 @@ var AnnouncementService = {
         //根据id 查询当前id的信息，并绑定到页面上。
 
 
-
         //打开pop 进行数据绑定。
         globalService.pop();
-
 
 
     },
@@ -228,7 +227,7 @@ var AnnouncementService = {
             // }
         });
     },
-    queryOneAnnouncement:function (id) {
+    queryOneAnnouncement: function (id) {
         $.ajax({
             headers: {"X-Authentication-Token": globalService.tokenOfHeader},
             url: globalService.basePath + '/announcement',
