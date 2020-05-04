@@ -63,15 +63,20 @@
             <!--           双层ui-li 实现menu菜单 ：ul.card-menu>li.unit-parent*2>ul>li.children*3  fixme: 前面的结构描述不对, ul.card-menu>(li.unit-parent+ul>li.children*3)*2-->
             <ul>
                 <li onclick="" class="unit-parent">
-                    <a href="javascript:void(0)">科研信息管理<i class="iconfont icon-zhankai"></i></a>
+                    <a href="javascript:void(0)">科研动态<i class="iconfont icon-zhankai"></i></a>
                 </li>
                 <ul class="children">
                     <li onclick="AchievementService.showList('self')"><a href="javascript:void(0)">我的成果</a></li>
                     <li><a href="#">信息采集</a></li>
+                    <li onclick="AnnouncementService.showList('self')"><a href="javascript:void(0)">我的消息</a></li>
+                </ul>
+                <li onclick="" class="unit-parent">
+                    <a href="javascript:void(0)">教学信息<i class="iconfont icon-zhankai"></i></a>
+                </li>
+                <ul class="children">
                     <li onclick="ScoreService.show()"><a href="javascript:void(0)">成绩分布</a></li>
                     <li onclick="SourceService.showList()"><a href="javascript:void(0)">教学资源</a></li>
                     <li onclick="CourseService.show('self')"><a href="javascript:void(0)">我的课程</a></li>
-                    <li onclick="AnnouncementService.showList('self')"><a href="javascript:void(0)">我的消息</a></li>
                 </ul>
 
                 <li onclick="" class="unit-parent">
@@ -105,10 +110,10 @@
 
     <!--     抽不出来的JS部分 -->
     <script>
-        layui.use('form', function () {
-            var form = layui.form;
-            form.render();
-        })
+        // layui.use('form', function () {
+        //     const form = layui.form;
+        //     form.render();
+        // })
         /**
          * 展开，收缩 单元的代码。
          * MENU结构 ul.card-menu>(li.unit-parent+ul>li.children*3)*2
@@ -182,7 +187,7 @@
                 // if(showListStringArr.length>0){
                 //     $('.main-view>aside>ul').show();
                 // }
-
+                debugger
                 //进行显示。
                 for (var i = 0; i < showListStringArr.length; i++) {
                     console.log(" showListStringArr[i] " + showListStringArr[i])

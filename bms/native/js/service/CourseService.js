@@ -209,24 +209,26 @@ let CourseService = {
             })
         }
         // /user/list
-        $.ajax({
-            headers: {
-                "X-Authentication-Token": globalService.tokenOfHeader//此处放置请求到的用户token
-            },
-            url: `${globalService.basePath}/user/list`,
-            type: 'get',
-            success: function (res) {
-                if (res.ret) {
-                    CourseService.teachers = res.data;
-                } else {
-                    layui.use('layer', function () {
-                        layer.msg(res.msg, {icon: 5, time: 2000}, function () {
-                            layer.closeAll();
-                        })
-                    });
+        if (who!=='self') {
+            $.ajax({
+                headers: {
+                    "X-Authentication-Token": globalService.tokenOfHeader//此处放置请求到的用户token
+                },
+                url: `${globalService.basePath}/user/list`,
+                type: 'get',
+                success: function (res) {
+                    if (res.ret) {
+                        CourseService.teachers = res.data;
+                    } else {
+                        layui.use('layer', function () {
+                            layer.msg(res.msg, {icon: 5, time: 2000}, function () {
+                                layer.closeAll();
+                            })
+                        });
+                    }
                 }
-            }
-        });
+            });
+        }
         $.ajax({
             headers: {
                 "X-Authentication-Token": globalService.tokenOfHeader//此处放置请求到的用户token

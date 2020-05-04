@@ -148,6 +148,7 @@
             <span>密码</span><input type="password" class="password" autocomplete="off" value="123"/>
             <div id="loginBtn" onclick="login()">登陆</div>
         </div>
+        <script src="layui/layui.js"></script>
         <script>
             //使用getParameter() 应该是获取form 中的数据的。而不是一个简单的ajax.
             //这个地方需要用到form ajax.
@@ -193,10 +194,11 @@
                             for (var i = 0; i < length; i++) {
                                 if (roles[i] == "教师") {
                                     showMenuList.push(0);
+                                    showMenuList.push(1);
                                 } else if (roles[i] == "系主任") {
-                                    showMenuList.push(1)
-                                } else if (roles[i] == "管理员") {
                                     showMenuList.push(2)
+                                } else if (roles[i] == "管理员") {
+                                    showMenuList.push(3)
                                 }
                             }
 
@@ -205,6 +207,12 @@
 
                             localStorage.removeItem("token");
                             localStorage.setItem("token", tokenOfHeader);
+
+                        } else {
+                            layui.use('layer', function(){
+                                const layer = layui.layer;
+                                layer.msg(data.msg);
+                            });
 
                         }
                     }
