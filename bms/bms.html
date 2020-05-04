@@ -20,6 +20,7 @@
     <script type="text/javascript" src="native/js/service/ScoreService.js" charset="UTF-8"></script>
     <script type="text/javascript" src="native/js/service/CourseService.js" charset="UTF-8"></script>
     <script type="text/javascript" src="native/js/service/SourceService.js" charset="UTF-8"></script>
+    <script type="text/javascript" src="native/js/service/QuestionnaireService.js" charset="UTF-8"></script>
     <script type="text/javascript" src="native/js/service/UserService.js" charset="UTF-8"></script>
     <script type="text/javascript" src="native/js/view/UserView.js" charset="UTF-8"></script>
     <script type="text/javascript" src="native/js/util/DataBinding.js" charset="UTF-8"></script>
@@ -67,7 +68,7 @@
                 </li>
                 <ul class="children">
                     <li onclick="AchievementService.showList('self')"><a href="javascript:void(0)">我的成果</a></li>
-                    <li><a href="#">信息采集</a></li>
+                    <li onclick="QuestionnaireService.show()"><a href="javascript:void(0)">信息采集</a></li>
                     <li onclick="AnnouncementService.showList('self')"><a href="javascript:void(0)">我的消息</a></li>
                 </ul>
                 <li onclick="" class="unit-parent">

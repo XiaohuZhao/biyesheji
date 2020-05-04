@@ -292,7 +292,7 @@ let AchievementService = {
                 async: true,
                 data: JSON.stringify(data),
                 success: function (data) {
-                    AchievementService.showList()
+                    AchievementService.showList('self')
                 }
             })
         });
@@ -537,7 +537,7 @@ let AchievementService = {
                 async: true,
                 data: JSON.stringify(data),
                 success: function (data) {
-                    AchievementService.showList()
+                    AchievementService.showList('self')
                 }
             })
         });
@@ -738,7 +738,7 @@ let AchievementService = {
                 async: true,
                 data: JSON.stringify(data),
                 success: function (data) {
-                    AchievementService.showList()
+                    AchievementService.showList('self')
                 }
             })
         });
@@ -959,7 +959,7 @@ let AchievementService = {
                 async: true,
                 data: JSON.stringify(data),
                 success: function (data) {
-                    AchievementService.showList()
+                    AchievementService.showList('self')
                 }
             })
         });
@@ -982,7 +982,7 @@ let AchievementService = {
                 async: true,
                 success: function (result) {
                     console.log(result)
-                    AchievementService.showList()
+                    AchievementService.showList('self')
                 }
             });
 
@@ -1707,6 +1707,9 @@ let AchievementService = {
             const formData = new FormData();
             formData.append("file", files[0]);
             $.ajax({
+                headers: {
+                    "X-Authentication-Token": globalService.tokenOfHeader//此处放置请求到的用户token
+                },
                 url: `${globalService.basePath}/file/upload`,
                 type: 'post',
                 data: formData,
