@@ -10,8 +10,6 @@ let SourceService = {
             `);
         $("#upload").on('change', function () {
             let files = $('#upload')[0].files;
-            debugger
-            console.log(files);
             const formData = new FormData();
             formData.append("file", files[0]);
             formData.append("save", "true");
@@ -49,7 +47,6 @@ let SourceService = {
                     layui.use('table', function () {
                         for (let row of res.data) {
                             row.size = (row.size / 1024).toFixed(2).replace(/\b(0+)/gi, "");
-                            debugger
                             if (row.size.endsWith(".")) {
                                 row.size = row.size.substr(0, row.size.length - 1)
                             }

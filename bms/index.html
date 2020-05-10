@@ -186,8 +186,6 @@
                             localStorage.setItem('userRoles', roles);
                             let length = roles.length;
                             tokenOfHeader = data.data['X-Authentication-Token'];
-                            debugger
-                            console.log(tokenOfHeader)
 
                             var showMenuList = [];
 
@@ -249,7 +247,6 @@
     var i = 0;
     var bodyObj = document.getElementsByTagName("body")[0];
     var timer = setInterval(function () {
-        console.log(bodyObj == $("body")[0]);//取class，或者tagName都是一个数组，而取id是一个对象。虽然页面上只有一个body但是jquery把它和其他的标签是一样对待的。
         $("body")[0].style.background = "url(" + arr[i % 3] + ")  fixed top";
         $(document.body)[0].style.backgroundSize = "cover";
         bodyObj.style.transition = "1s";

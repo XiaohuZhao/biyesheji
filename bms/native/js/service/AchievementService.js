@@ -14,7 +14,6 @@ let AchievementService = {
             cache: false,
             async: true,
             success: function (res) {
-                console.log("res", res);
                 layui.use('table', function () {
                     for (let row of res.data) {
                         row.status = row.status === 1 ? "已审核" : "未审核";
@@ -976,13 +975,16 @@ let AchievementService = {
                 },
                 url: `${globalService.basePath}/achievement/${id}`,
                 type: "delete",
-                contentType: "application/json",
-                dataType: 'json',
-                cache: false,
-                async: true,
                 success: function (result) {
-                    console.log(result)
-                    AchievementService.showList('self')
+                    if (result.ret) {
+                        AchievementService.showList('self')
+                    } else {
+                        layui.use('layer', function () {
+                            layer.msg(res.msg, {icon: 5, time: 2000}, function () {
+                                layer.closeAll();
+                            })
+                        });
+                    }
                 }
             });
 
@@ -1021,7 +1023,6 @@ let AchievementService = {
         let department = $tds.eq(3).find('input[name="department"]').val();
         let contribution = $tds.eq(4).find('input[name="contribution"]').val();
         let row = {seq, authorName, gender: genderCode, department, contribution};
-        debugger
         for (let index in this.authors) {
             if (this.authors[index].seq === seq) {
                 layer.msg('署名顺序不可相同', {icon: 5});
@@ -1702,7 +1703,6 @@ let AchievementService = {
         });
         $('#fileUploadInput').on('change', function () {
             let files = $('#fileUploadInput')[0].files;
-            debugger
             console.log(files);
             const formData = new FormData();
             formData.append("file", files[0]);

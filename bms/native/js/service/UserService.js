@@ -381,7 +381,6 @@ let UserService = {
                 async: true,
                 success: function (result) {
                     if (result.ret) {
-                        debugger
                         let html = `<form class="layui-form" style="margin-top: 32px;">`;
                         for (let row of result.data) {
                             console.log(row.groupId);
@@ -422,7 +421,6 @@ let UserService = {
         }
     },
     changeGroup: function (userId, groupId) {
-        debugger
         $.ajax({
             headers: {
                 "X-Authentication-Token": globalService.tokenOfHeader//此处放置请求到的用户token

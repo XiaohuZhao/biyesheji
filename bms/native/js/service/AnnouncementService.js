@@ -20,7 +20,6 @@ var AnnouncementService = {
                 "                </div>\n" +
                 "            </script>");
             //2.发送ajax.
-            debugger
             $.ajax({
                 headers: {"X-Authentication-Token": globalService.tokenOfHeader},
                 url: globalService.basePath + '/announcement' + (who === 'self' ? '/user' : ''),

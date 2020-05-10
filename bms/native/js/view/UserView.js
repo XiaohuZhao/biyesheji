@@ -102,7 +102,6 @@ var UserView = {
             "  </div>";
     },
     lookOtherUserInfo: function () {
-        debugger
         return "<div class=\"layui-form-item p-all-20\">\n" +
             "    <label class=\"layui-form-label\">姓名</label>\n" +
             "    <div class=\"layui-input-block\">\n" +

@@ -145,7 +145,6 @@ let CourseService = {
                         </div>
                     </div>
                 </form>`;
-                debugger
                 layui.use('layer', function () {
                     const layer = layui.layer;
                     layer.open({
