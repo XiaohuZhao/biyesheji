@@ -16,7 +16,7 @@ let AchievementService = {
             success: function (res) {
                 layui.use('table', function () {
                     for (let row of res.data) {
-                        row.status = row.status === 1 ? "已审核" : "未审核";
+                        row.status = row.status !== 0 ? "已审核" : "未审核";
                         row.operate = `<a style="color: red"  href="javascript:void(0)" onclick="AchievementService.deleteOne(${row.id})">删除</a>`
                     }
                     layui.table.render({
@@ -1196,7 +1196,7 @@ let AchievementService = {
                             <input type="text" value="${data.comment === null ? '' : data.comment}" disabled class="layui-input">
                         </div>
                     </span>
-                    <div style="${data.status !== 1 && data.id !== null ? '' : 'display:none'}">
+                    <div style="${data.status === 0 && data.id !== null ? '' : 'display:none'}">
                         <div class="layui-input-inline">
                             <button type="button" class="layui-btn" onclick="AchievementService.review(${data.id},1)">
                                 <i class="layui-icon">&#xe605;</i>通过
@@ -1365,7 +1365,7 @@ let AchievementService = {
                             <input type="text" value="${data.comment === null ? '' : data.comment}" disabled class="layui-input">
                         </div>
                     </span>
-                    <div style="${data.status !== 1 && data.id !== null ? '' : 'display:none'}">
+                    <div style="${data.status === 0 && data.id !== null ? '' : 'display:none'}">
                         <div class="layui-input-inline">
                             <button type="button" class="layui-btn" onclick="AchievementService.review(${data.id},1)">
                                 <i class="layui-icon">&#xe605;</i>通过
@@ -1504,7 +1504,7 @@ let AchievementService = {
                             <input type="text" value="${data.comment === null ? '' : data.comment}" disabled class="layui-input">
                         </div>
                     </span>
-                    <div style="${data.status !== 1 && data.id !== null ? '' : 'display:none'}">
+                    <div style="${data.status === 0 && data.id !== null ? '' : 'display:none'}">
                         <div class="layui-input-inline">
                             <button type="button" class="layui-btn" onclick="AchievementService.review(${data.id},1)">
                                 <i class="layui-icon">&#xe605;</i>通过
@@ -1665,7 +1665,7 @@ let AchievementService = {
                             <input type="text" value="${data.comment === null ? '' : data.comment}" disabled class="layui-input">
                         </div>
                     </span>
-                    <div style="${data.status !== 1 && data.id !== null ? '' : 'display:none'}">
+                    <div style="${data.status === 0 && data.id !== null ? '' : 'display:none'}">
                         <div class="layui-input-inline">
                             <button type="button" class="layui-btn" onclick="AchievementService.review(${data.id},1)">
                                 <i class="layui-icon">&#xe605;</i>通过
