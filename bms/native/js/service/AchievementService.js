@@ -31,15 +31,15 @@ let AchievementService = {
             success: function (res) {
                 let types = res.data.types;
                 let $type = $("#select-type");
-                $type.append(`<div onclick="AchievementService.showList('self')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">全部(${types.map(o => o.amount).reduce((a, b) => a + b)})</div>`)
+                $type.append(`<div onclick="AchievementService.showList('${who}')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">全部(${types.map(o => o.amount).reduce((a, b) => a + b)})</div>`)
                 for (let type of types) {
-                    $type.append(`<div onclick="AchievementService.showList('self','${type.type}')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">${type.type}(${type.amount})</div>`)
+                    $type.append(`<div onclick="AchievementService.showList('${who}','${type.type}')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">${type.type}(${type.amount})</div>`)
                 }
                 let dates = res.data.dates;
                 let $date = $("#select-date");
-                $date.append(`<div onclick="AchievementService.showList('self')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">全部(${dates.map(o => o.amount).reduce((a, b) => a + b)})</div>`)
+                $date.append(`<div onclick="AchievementService.showList('${who}')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">全部(${dates.map(o => o.amount).reduce((a, b) => a + b)})</div>`)
                 for (let date of dates) {
-                    $date.append(`<div onclick="AchievementService.showList('self','${date.date}')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">${date.date}(${date.amount})</div>`)
+                    $date.append(`<div onclick="AchievementService.showList('${who}','${date.date}')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">${date.date}(${date.amount})</div>`)
                 }
 
                 layui.use('table', function () {
