@@ -1,21 +1,49 @@
 let AchievementService = {
-    showList: function (who) {
+    showList: function (who, search = '') {
         globalService.setSectionTagUI(`${who === 'self' ? '<button id="newAchievement" style="margin-top: 32px;margin-left: 32px" onclick="AchievementService.addPaper()" type="button" class="layui-btn">新增论文</button>\n            <button id="newAchievement" style="margin-top: 32px;margin-left: 32px" onclick="AchievementService.addBook()" type="button" class="layui-btn">新增著作</button>\n            <button id="newAchievement" style="margin-top: 32px;margin-left: 32px" onclick="AchievementService.addProject()" type="button" class="layui-btn">新增项目结题</button>\n            <button id="newAchievement" style="margin-top: 32px;margin-left: 32px" onclick="AchievementService.addAwards()" type="button" class="layui-btn">新增获奖</button>' : ''}
+            <style>
+                .select-search-label{
+                    width: 200px;
+                }
+                .select-search{
+                    margin: 10px 30px;
+                }
+            </style>
+            <br>
+            <div class="select-search"> 
+                <label class="select-search-label">类型：</label>
+                <div id="select-type" style="display: inline-block"></div>
+            </div>
+            <div class="select-search">
+                <label class="select-search-label">时间：</label>
+                <div id="select-date" style="display: inline-block"></div>
+            </div>
             <table id="demoId" class="layui-hide" lay-filter="achievement"></table>
         `);
         $.ajax({
             headers: {
                 "X-Authentication-Token": globalService.tokenOfHeader//此处放置请求到的用户token
             },
-            url: `${globalService.basePath}/achievement/${who}`,
+            url: `${globalService.basePath}/achievement/${who}?search=${search}`,
             type: "get",
             contentType: "application/json",
             dataType: 'json',
-            cache: false,
-            async: true,
             success: function (res) {
+                let types = res.data.types;
+                let $type = $("#select-type");
+                $type.append(`<div onclick="AchievementService.showList('self')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">全部(${types.map(o => o.amount).reduce((a, b) => a + b)})</div>`)
+                for (let type of types) {
+                    $type.append(`<div onclick="AchievementService.showList('self','${type.type}')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">${type.type}(${type.amount})</div>`)
+                }
+                let dates = res.data.dates;
+                let $date = $("#select-date");
+                $date.append(`<div onclick="AchievementService.showList('self')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">全部(${dates.map(o => o.amount).reduce((a, b) => a + b)})</div>`)
+                for (let date of dates) {
+                    $date.append(`<div onclick="AchievementService.showList('self','${date.date}')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">${date.date}(${date.amount})</div>`)
+                }
+
                 layui.use('table', function () {
-                    for (let row of res.data) {
+                    for (let row of res.data.achievements) {
                         row.status = row.status !== 0 ? "已审核" : "未审核";
                         row.operate = `<a style="color: red"  href="javascript:void(0)" onclick="AchievementService.deleteOne(${row.id})">删除</a>`
                     }
@@ -37,7 +65,7 @@ let AchievementService = {
                         ]]
                         , skin: 'line' //表格风格
                         , even: true
-                        , data: res.data
+                        , data: res.data.achievements
                     });
                     //行内监听事件 ,点击行，出章节。
                     layui.table.on('rowDouble(achievement)', function (obj) {
