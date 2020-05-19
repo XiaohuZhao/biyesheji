@@ -1,6 +1,6 @@
 let SourceService = {
     showList: function () {
-        let userId = localStorage.getItem("userInfo").id;
+        let userId = sessionStorage.getItem("id");
         let roles = localStorage.getItem('userRoles');
         globalService.setSectionTagUI(
             `<button style="margin-top: 32px;margin-left: 32px" onclick="ScoreService.upload()" type="button" class="layui-btn">提交资源</button>
