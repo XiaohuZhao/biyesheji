@@ -20,126 +20,97 @@ let AchievementService = {
             </div>
             <table id="demoId" class="layui-hide" lay-filter="achievement"></table>
         `);
-        // $.ajax({
-        //     headers: {
-        //         "X-Authentication-Token": globalService.tokenOfHeader//此处放置请求到的用户token
-        //     },
-        //     url: `${globalService.basePath}/achievement/${who}?search=${search}`,
-        //     type: "get",
-        //     contentType: "application/json",
-        //     dataType: 'json',
-        //     success: function (res) {
-        //         let types = res.data.types;
-        //         let $type = $("#select-type");
-        //         $type.append(`<div onclick="AchievementService.showList('${who}')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">全部(${types.map(o => o.amount).reduce((a, b) => a + b)})</div>`)
-        //         for (let type of types) {
-        //             $type.append(`<div onclick="AchievementService.showList('${who}','${type.type}')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">${type.type}(${type.amount})</div>`)
-        //         }
-        //         let dates = res.data.dates;
-        //         let $date = $("#select-date");
-        //         $date.append(`<div onclick="AchievementService.showList('${who}')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">全部(${dates.map(o => o.amount).reduce((a, b) => a + b)})</div>`)
-        //         for (let date of dates) {
-        //             $date.append(`<div onclick="AchievementService.showList('${who}','${date.date}')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">${date.date}(${date.amount})</div>`)
-        //         }
 
-                layui.use('table', function () {
-                    // for (let row of res.data.achievements.data) {
-                    //     row.status = row.status !== 0 ? "已审核" : "未审核";
-                    //     row.operate = `<a style="color: red"  href="javascript:void(0)" onclick="AchievementService.deleteOne(${row.id})">删除</a>`
-                    // }
-                    layui.table.render({
-                        url: `${globalService.basePath}/achievement/${who}?search=${search}`,
-                        headers : {'X-Authentication-Token': globalService.tokenOfHeader},
-                        elem: '#demoId'//绑定元素
+        layui.use('table', function () {
+            layui.table.render({
+                url: `${globalService.basePath}/achievement/${who}?search=${search}`,
+                headers: {'X-Authentication-Token': globalService.tokenOfHeader},
+                elem: '#demoId'//绑定元素
 
-                        , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
-                        , cols: [[
-                            {field: 'title', width: '10%', title: '标题', sort: true}
-                            , {field: 'firstAuthor', width: '8%', title: '第一作者'}
-                            , {field: 'department', width: '10%', title: '所属部门'}
-                            , {field: 'subject', width: '10%', title: '一级学科'}
-                            , {field: 'publishTime', width: '10%', title: '发布日期', sort: true}
-                            , {field: 'categories', width: '10%', title: '学课门类'}
-                            , {field: 'status', width: '8%', title: '审核状态'}
-                            , {field: 'reviewTime', width: '10%', title: '审核时间'}
-                            , {field: 'type', width: '8%', title: '类型'}
-                            , {field: 'comment', width: '8%', title: '审核意见'}
-                            , {field: 'operate', width: '8%', title: '操作'}
-                        ]]
-                        , skin: 'line' //表格风格
-                        , even: true
-                        , page: true
-                        , request: {
-                            pageName: 'pageNo' //页码的参数名称，默认：page
-                            , limitName: 'pageSize' //每页数据量的参数名，默认：limit
+                , cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+                , cols: [[
+                    {field: 'title', width: '10%', title: '标题', sort: true}
+                    , {field: 'firstAuthor', width: '8%', title: '第一作者'}
+                    , {field: 'department', width: '10%', title: '所属部门'}
+                    , {field: 'subject', width: '10%', title: '一级学科'}
+                    , {field: 'publishTime', width: '10%', title: '发布日期', sort: true}
+                    , {field: 'categories', width: '10%', title: '学课门类'}
+                    , {field: 'status', width: '8%', title: '审核状态'}
+                    , {field: 'reviewTime', width: '10%', title: '审核时间'}
+                    , {field: 'type', width: '8%', title: '类型'}
+                    , {field: 'comment', width: '8%', title: '审核意见'}
+                    , {field: 'operate', width: '8%', title: '操作'}
+                ]]
+                , skin: 'line' //表格风格
+                , even: true
+                , page: true
+                , request: {
+                    pageName: 'pageNo' //页码的参数名称，默认：page
+                    , limitName: 'pageSize' //每页数据量的参数名，默认：limit
+                }
+                , response: {
+                    statusCode: 200 //规定成功的状态码，默认：0
+                    , countName: 'total' //规定数据总数的字段名称，默认：count
+                    , dataName: 'rows' //规定数据列表的字段名称，默认：data
+                }
+                , toolbar: 'default'
+                , parseData: function (res) { //res 即为原始返回的数据
+                    let types = res.data.types;
+                    let $type = $("#select-type");
+                    $type.append(`<div onclick="AchievementService.showList('${who}')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">全部(${types.map(o => o.amount).reduce((a, b) => a + b)})</div>`)
+                    for (let type of types) {
+                        $type.append(`<div onclick="AchievementService.showList('${who}','${type.type}')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">${type.type}(${type.amount})</div>`)
+                    }
+                    let dates = res.data.dates;
+                    let $date = $("#select-date");
+                    $date.append(`<div onclick="AchievementService.showList('${who}')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">全部(${dates.map(o => o.amount).reduce((a, b) => a + b)})</div>`)
+                    for (let date of dates) {
+                        $date.append(`<div onclick="AchievementService.showList('${who}','${date.date}')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">${date.date}(${date.amount})</div>`)
+                    }
+                    for (let row of res.data.achievements.data) {
+                        row.status = row.status !== 0 ? "已审核" : "未审核";
+                        row.operate = `<a style="color: red"  href="javascript:void(0)" onclick="AchievementService.deleteOne(${row.id})">删除</a>`
+                    }
+                    return {
+                        "code": res.code,
+                        "msg": res.msg,
+                        "total": res.data.achievements.total, //解析数据长度
+                        "rows": res.data.achievements.data //解析数据列表
+                    };
+                }
+            });
+            //行内监听事件 ,点击行，出章节。
+            layui.table.on('rowDouble(achievement)', function (obj) {
+                // 清除数据
+                globalService.setSectionTagUI(`<table id="demoId" class="layui-hide"></table>`);
+                let id = obj.data.id;
+                $.ajax({
+                    headers: {
+                        "X-Authentication-Token": globalService.tokenOfHeader//此处放置请求到的用户token
+                    },
+                    // url: basePath + '/achievement/',
+                    url: `${globalService.basePath}/achievement/${id}`,
+                    type: "get",
+                    contentType: "application/json",
+                    dataType: 'json',
+                    cache: false,
+                    async: true,
+                    success: function (res) {
+                        let data = res.data;
+                        console.log(data);
+                        if (data.type === '论文') {
+                            AchievementService.showPaper(data)
+                        } else if (data.type === '著作') {
+                            AchievementService.showBook(data)
+                        } else if (data.type === '项目结题') {
+                            AchievementService.showProject(data)
+                        } else if (data.type === '获奖') {
+                            AchievementService.showAwards(data)
                         }
-                        ,response: {statusCode: 200 //规定成功的状态码，默认：0
-                            ,countName: 'total' //规定数据总数的字段名称，默认：count
-                            ,dataName: 'rows' //规定数据列表的字段名称，默认：data
-                        }
-                        , toolbar: 'default'
-                        , parseData: function (res) { //res 即为原始返回的数据
-                            let types = res.data.types;
-                            let $type = $("#select-type");
-                            $type.append(`<div onclick="AchievementService.showList('${who}')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">全部(${types.map(o => o.amount).reduce((a, b) => a + b)})</div>`)
-                            for (let type of types) {
-                                $type.append(`<div onclick="AchievementService.showList('${who}','${type.type}')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">${type.type}(${type.amount})</div>`)
-                            }
-                            let dates = res.data.dates;
-                            let $date = $("#select-date");
-                            $date.append(`<div onclick="AchievementService.showList('${who}')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">全部(${dates.map(o => o.amount).reduce((a, b) => a + b)})</div>`)
-                            for (let date of dates) {
-                                $date.append(`<div onclick="AchievementService.showList('${who}','${date.date}')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">${date.date}(${date.amount})</div>`)
-                            }
-                            for (let row of res.data.achievements.data) {
-                                row.status = row.status !== 0 ? "已审核" : "未审核";
-                                row.operate = `<a style="color: red"  href="javascript:void(0)" onclick="AchievementService.deleteOne(${row.id})">删除</a>`
-                            }
-                            return {
-                                "code": res.code,
-                                "msg": res.msg,
-                                "total": res.data.achievements.total, //解析数据长度
-                                "rows": res.data.achievements.data //解析数据列表
-                            };
-                        }
-                    });
-                    //行内监听事件 ,点击行，出章节。
-                    layui.table.on('rowDouble(achievement)', function (obj) {
-                        // 清除数据
-                        globalService.setSectionTagUI(`<table id="demoId" class="layui-hide"></table>`);
-                        let id = obj.data.id;
-                        $.ajax({
-                            headers: {
-                                "X-Authentication-Token": globalService.tokenOfHeader//此处放置请求到的用户token
-                            },
-                            // url: basePath + '/achievement/',
-                            url: `${globalService.basePath}/achievement/${id}`,
-                            type: "get",
-                            contentType: "application/json",
-                            dataType: 'json',
-                            cache: false,
-                            async: true,
-                            success: function (res) {
-                                let data = res.data;
-                                console.log(data);
-                                if (data.type === '论文') {
-                                    AchievementService.showPaper(data)
-                                } else if (data.type === '著作') {
-                                    AchievementService.showBook(data)
-                                } else if (data.type === '项目结题') {
-                                    AchievementService.showProject(data)
-                                } else if (data.type === '获奖') {
-                                    AchievementService.showAwards(data)
-                                }
-                            }
-                        })
-                    });
-                });
-        //     },
-        //     error: function () {
-        //         alert("请求失败！");
-        //     }
-        // });
+                    }
+                })
+            });
+        });
     },
     addPaper: function () {
         globalService.setSectionTagUI(
