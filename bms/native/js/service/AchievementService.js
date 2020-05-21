@@ -56,16 +56,20 @@ let AchievementService = {
                 , toolbar: 'default'
                 , parseData: function (res) { //res 即为原始返回的数据
                     let types = res.data.types;
-                    let $type = $("#select-type");
-                    $type.append(`<div onclick="AchievementService.showList('${who}')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">全部(${types.map(o => o.amount).reduce((a, b) => a + b)})</div>`)
-                    for (let type of types) {
-                        $type.append(`<div onclick="AchievementService.showList('${who}','${type.type}')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">${type.type}(${type.amount})</div>`)
+                    if(types.length) {
+                        let $type = $("#select-type");
+                        $type.append(`<div onclick="AchievementService.showList('${who}')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">全部(${types.map(o => o.amount).reduce((a, b) => a + b)})</div>`)
+                        for (let type of types) {
+                            $type.append(`<div onclick="AchievementService.showList('${who}','${type.type}')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">${type.type}(${type.amount})</div>`)
+                        }
                     }
                     let dates = res.data.dates;
                     let $date = $("#select-date");
-                    $date.append(`<div onclick="AchievementService.showList('${who}')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">全部(${dates.map(o => o.amount).reduce((a, b) => a + b)})</div>`)
-                    for (let date of dates) {
-                        $date.append(`<div onclick="AchievementService.showList('${who}','${date.date}')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">${date.date}(${date.amount})</div>`)
+                    if (dates.length) {
+                        $date.append(`<div onclick="AchievementService.showList('${who}')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">全部(${dates.map(o => o.amount).reduce((a, b) => a + b)})</div>`)
+                        for (let date of dates) {
+                            $date.append(`<div onclick="AchievementService.showList('${who}','${date.date}')" style="text-decoration:underline;margin-left: 10px;display: inline-block;">${date.date}(${date.amount})</div>`)
+                        }
                     }
                     for (let row of res.data.achievements.data) {
                         row.status = row.status !== 0 ? "已审核" : "未审核";
@@ -268,7 +272,7 @@ let AchievementService = {
                 <label style="margin: 80px 50px 50px;font-size: 32px;width: 300px">附件信息</label>
                 <div class="layui-input-inline">
                     <button type="button" class="layui-btn" id="fileUpload" style="margin-top: -15px;">
-                        <i class="layui-icon">&#xe67c;</i>上传图片
+                        <i class="layui-icon">&#xe67c;</i>上传附件
                     </button>
                     <form enctype="multipart/form-data">
                         <input id="fileUploadInput" type="file" name="file" hidden>
@@ -511,7 +515,7 @@ let AchievementService = {
                 <label style="margin: 80px 50px 50px;font-size: 32px;width: 300px">附件信息</label>
                 <div class="layui-input-inline">
                     <button type="button" class="layui-btn" id="fileUpload" style="margin-top: -15px;">
-                        <i class="layui-icon">&#xe67c;</i>上传图片
+                        <i class="layui-icon">&#xe67c;</i>上传附件
                     </button>
                     <form enctype="multipart/form-data">
                         <input id="fileUploadInput" type="file" name="file" hidden>
@@ -716,7 +720,7 @@ let AchievementService = {
                 <label style="margin: 80px 50px 50px;font-size: 32px;width: 300px">附件信息</label>
                 <div class="layui-input-inline">
                     <button type="button" class="layui-btn" id="fileUpload" style="margin-top: -15px;">
-                        <i class="layui-icon">&#xe67c;</i>上传图片
+                        <i class="layui-icon">&#xe67c;</i>上传附件
                     </button>
                     <form enctype="multipart/form-data">
                         <input id="fileUploadInput" type="file" name="file" hidden>
@@ -937,7 +941,7 @@ let AchievementService = {
                 <label style="margin: 80px 50px 50px;font-size: 32px;width: 300px">附件信息</label>
                 <div class="layui-input-inline">
                     <button type="button" class="layui-btn" id="fileUpload" style="margin-top: -15px;">
-                        <i class="layui-icon">&#xe67c;</i>上传图片
+                        <i class="layui-icon">&#xe67c;</i>上传附件
                     </button>
                     <form enctype="multipart/form-data">
                         <input id="fileUploadInput" type="file" name="file" hidden>
